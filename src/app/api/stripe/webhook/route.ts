@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { getStripe, STRIPE_WEBHOOK_SECRET } from "@/lib/stripe/config";
+import { getStripe } from "@/lib/stripe/server";
+import { STRIPE_WEBHOOK_SECRET } from "@/lib/stripe/config";
 import Stripe from "stripe";
 import { createAdminClient } from "@/lib/supabase/admin";
 
