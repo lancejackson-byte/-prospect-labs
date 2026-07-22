@@ -1,15 +1,9 @@
-import { Hero } from "@/components/marketing/hero";
-import { Features } from "@/components/marketing/features";
-import { PricingCards } from "@/components/marketing/pricing-cards";
-import { FAQAccordion } from "@/components/marketing/faq-accordion";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
 
-export default function HomePage() {
+export default function MarketingLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col">
-      {/* Header */}
       <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur">
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-6">
           <Link href="/" className="flex items-center gap-2 font-bold text-lg">
@@ -34,35 +28,13 @@ export default function HomePage() {
           </nav>
         </div>
       </header>
-
-      <main className="flex-1">
-        <Hero />
-        <Features />
-        <PricingCards />
-        <FAQAccordion />
-
-        {/* CTA Section */}
-        <section className="px-6 py-20">
-          <div className="mx-auto max-w-3xl rounded-2xl bg-primary p-12 text-center text-primary-foreground">
-            <h2 className="text-3xl font-bold">Ready to Grow Your Pipeline?</h2>
-            <p className="mt-4 text-primary-foreground/80">
-              Join 500+ sales professionals who use Prospect Labs to find leads, send AI emails, and close more deals.
-            </p>
-            <Button size="lg" variant="secondary" className="mt-6" asChild>
-              <Link href="/signup">
-                Start Free Trial <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
-          </div>
-        </section>
-      </main>
-
+      <main className="flex-1">{children}</main>
       <footer className="border-t py-8">
         <div className="mx-auto max-w-6xl px-6 text-center text-sm text-muted-foreground">
           <p>&copy; {new Date().getFullYear()} Prospect Labs. All rights reserved.</p>
           <div className="mt-2 flex justify-center gap-4">
-            <Link href="/legal" className="hover:text-foreground">Privacy</Link>
-            <Link href="/legal" className="hover:text-foreground">Terms</Link>
+            <Link href="/legal" className="hover:text-foreground">Privacy Policy</Link>
+            <Link href="/legal" className="hover:text-foreground">Terms of Service</Link>
           </div>
         </div>
       </footer>
