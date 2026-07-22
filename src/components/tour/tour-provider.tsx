@@ -4,7 +4,6 @@ import {
   createContext,
   useContext,
   useState,
-  useEffect,
   useCallback,
   type ReactNode,
 } from "react";
@@ -42,23 +41,11 @@ export function TourProvider({ children, userId }: TourProviderProps) {
   const router = useRouter();
   const [run, setRun] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
-  const [isMounted, setIsMounted] = useState(false);
 
   // Build a user-specific localStorage key
   const storageKey = userId
     ? `${TOUR_LOCALSTORAGE_KEY}-${userId}`
     : TOUR_LOCALSTORAGE_KEY;
-
-  // On mount, check if tour was completed and auto-start if not
-  useEffect(() => {
-    setIsMounted(true);
-    const completed = localStorage.getItem(storageKey);
-    if (!completed) {
-      // Small delay so the DOM is ready
-      const timer = setTimeout(() => setRun(true), 800);
-      return () => clearTimeout(timer);
-    }
-  }, [storageKey]);
 
   const startTour = useCallback(() => {
     setStepIndex(0);
@@ -97,15 +84,6 @@ export function TourProvider({ children, userId }: TourProviderProps) {
     },
     [router, storageKey]
   );
-
-  // Don't render Joyride until mounted to avoid hydration mismatch
-  if (!isMounted) {
-    return (
-      <TourContext.Provider value={{ startTour, isTourRunning: false }}>
-        {children}
-      </TourContext.Provider>
-    );
-  }
 
   return (
     <TourContext.Provider value={{ startTour, isTourRunning: run }}>
