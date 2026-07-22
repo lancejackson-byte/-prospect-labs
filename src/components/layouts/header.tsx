@@ -13,7 +13,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogOut, User, CreditCard, Bell } from "lucide-react";
+import { LogOut, User, CreditCard, Bell, HelpCircle } from "lucide-react";
+import { useTour } from "@/components/tour";
 
 interface HeaderProps {
   userEmail?: string;
@@ -22,6 +23,7 @@ interface HeaderProps {
 
 export function Header({ userEmail, userAvatar }: HeaderProps) {
   const router = useRouter();
+  const { startTour } = useTour();
   const [user, setUser] = useState<{ email?: string } | null>(null);
 
   useEffect(() => {
@@ -55,6 +57,16 @@ export function Header({ userEmail, userAvatar }: HeaderProps) {
       </div>
 
       <div className="flex items-center gap-3">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={startTour}
+          title="Take a tour"
+          aria-label="Take a product tour"
+        >
+          <HelpCircle className="h-4 w-4" />
+        </Button>
+
         <Button variant="ghost" size="icon" className="relative">
           <Bell className="h-4 w-4" />
         </Button>
