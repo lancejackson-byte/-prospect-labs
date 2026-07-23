@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Building2, Globe, Mail, MapPin, Phone, Hash } from "lucide-react";
+import { toast } from "sonner";
 import type { LeadResult } from "@/lib/leads/types";
 
 interface LeadDetailSheetProps {
@@ -74,10 +75,19 @@ export function LeadDetailSheet({ lead, open, onClose }: LeadDetailSheetProps) {
           <Separator />
 
           <div className="flex gap-2">
-            <Button className="flex-1" size="sm">
+            <Button
+              className="flex-1"
+              size="sm"
+              onClick={() => toast("Coming soon", { description: "Add to List will be available soon." })}
+            >
               Add to List
             </Button>
-            <Button variant="outline" className="flex-1" size="sm">
+            <Button
+              variant="outline"
+              className="flex-1"
+              size="sm"
+              onClick={() => toast("Coming soon", { description: "Add to CRM will be available soon." })}
+            >
               Add to CRM
             </Button>
           </div>

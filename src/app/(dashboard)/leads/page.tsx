@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState } from "react";
 import { getLeadProvider } from "@/lib/leads/provider-factory";
 import type { LeadResult, LeadSearchParams } from "@/lib/leads/types";
 import { LeadsSearch } from "@/components/leads/leads-search";
@@ -17,8 +17,9 @@ export default function LeadsPage() {
   const [selectedLead, setSelectedLead] = useState<LeadResult | null>(null);
   const [params, setParams] = useState<LeadSearchParams>({ limit: 12, page: 1 });
   const [total, setTotal] = useState(0);
+  const [hasSearched, setHasSearched] = useState(false);
 
-  const searchLeads = useCallback(async (searchParams: LeadSearchParams) => {
+  async function searchLeads(searchParams: LeadSearchParams) {
     setLoading(true);
     setError(null);
     try {
@@ -31,18 +32,20 @@ export default function LeadsPage() {
     } finally {
       setLoading(false);
     }
-  }, []);
-
-  useEffect(() => {
-    searchLeads(params);
-  }, [params, searchLeads]);
+  }
 
   function handleSearch(query: string) {
-    setParams((p) => ({ ...p, query, page: 1 }));
+    setHasSearched(true);
+    const newParams = { ...params, query, page: 1 };
+    setParams(newParams);
+    searchLeads(newParams);
   }
 
   function handleFilter(filters: Partial<LeadSearchParams>) {
-    setParams((p) => ({ ...p, ...filters, page: 1 }));
+    setHasSearched(true);
+    const newParams = { ...params, ...filters, page: 1 };
+    setParams(newParams);
+    searchLeads(newParams);
   }
 
   return (
@@ -68,6 +71,14 @@ export default function LeadsPage() {
       {loading ? (
         <div className="flex items-center justify-center py-20">
           <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        </div>
+      ) : !hasSearched ? (
+        <div className="flex flex-col items-center justify-center py-20 text-center">
+          <Search className="mb-4 h-12 w-12 text-muted-foreground" />
+          <h3 className="text-lg font-medium">Start your search</h3>
+          <p className="text-sm text-muted-foreground">
+            Enter a keyword, industry, or location and click Search to find B2B prospects.
+          </p>
         </div>
       ) : leads.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 text-center">
@@ -96,18 +107,22 @@ export default function LeadsPage() {
               <Button
                 variant="outline"
                 disabled={(params.page || 1) <= 1}
-                onClick={() =>
-                  setParams((p) => ({ ...p, page: (p.page || 1) - 1 }))
-                }
+                onClick={() => {
+                  const newParams = { ...params, page: (params.page || 1) - 1 };
+                  setParams(newParams);
+                  searchLeads(newParams);
+                }}
               >
                 Previous
               </Button>
               <Button
                 variant="outline"
                 disabled={((params.page || 1) * (params.limit || 12)) >= total}
-                onClick={() =>
-                  setParams((p) => ({ ...p, page: (p.page || 1) + 1 }))
-                }
+                onClick={() => {
+                  const newParams = { ...params, page: (params.page || 1) + 1 };
+                  setParams(newParams);
+                  searchLeads(newParams);
+                }}
               >
                 Next
               </Button>
