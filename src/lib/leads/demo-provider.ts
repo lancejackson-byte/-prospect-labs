@@ -16,10 +16,10 @@ function filterLeads(leads: LeadResult[], params: LeadSearchParams): LeadResult[
         (lead.city && lead.city.toLowerCase().includes(q));
       if (!match) return false;
     }
-    if (params.industry && lead.industry !== params.industry) return false;
-    if (params.city && lead.city !== params.city) return false;
-    if (params.state && lead.state !== params.state) return false;
-    if (params.business_size && lead.business_size !== params.business_size) return false;
+    if (params.industry && lead.industry?.toLowerCase() !== params.industry.toLowerCase()) return false;
+    if (params.city && lead.city?.toLowerCase() !== params.city.toLowerCase()) return false;
+    if (params.state && lead.state?.toLowerCase() !== params.state.toLowerCase()) return false;
+    if (params.business_size && lead.business_size?.toLowerCase() !== params.business_size.toLowerCase()) return false;
     return true;
   });
 }

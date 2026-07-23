@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -9,8 +10,9 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Building2, Globe, Mail, MapPin, Phone, Hash } from "lucide-react";
+import { Building2, Globe, Mail, MapPin, Phone, Hash, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { addLeadToCRM } from "@/lib/crm/actions";
 import type { LeadResult } from "@/lib/leads/types";
 
 interface LeadDetailSheetProps {
@@ -20,6 +22,8 @@ interface LeadDetailSheetProps {
 }
 
 export function LeadDetailSheet({ lead, open, onClose }: LeadDetailSheetProps) {
+  const [addingToCRM, setAddingToCRM] = useState(false);
+
   if (!lead) return null;
 
   type DetailItem = {
@@ -39,6 +43,22 @@ export function LeadDetailSheet({ lead, open, onClose }: LeadDetailSheetProps) {
     { label: "Industry", value: lead.industry, icon: Building2 },
     { label: "Company Size", value: lead.business_size ? `${lead.business_size} employees` : null, icon: Hash },
   ];
+
+  async function handleAddToCRM() {
+    setAddingToCRM(true);
+    try {
+      await addLeadToCRM(lead!.id, lead!.company_name);
+      toast.success("Added to CRM", {
+        description: `${lead!.company_name} has been added to your pipeline.`,
+      });
+      onClose();
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Failed to add to CRM";
+      toast.error("Failed to add to CRM", { description: message });
+    } finally {
+      setAddingToCRM(false);
+    }
+  }
 
   return (
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
@@ -86,9 +106,17 @@ export function LeadDetailSheet({ lead, open, onClose }: LeadDetailSheetProps) {
               variant="outline"
               className="flex-1"
               size="sm"
-              onClick={() => toast("Coming soon", { description: "Add to CRM will be available soon." })}
+              disabled={addingToCRM}
+              onClick={handleAddToCRM}
             >
-              Add to CRM
+              {addingToCRM ? (
+                <>
+                  <Loader2 className="mr-1 h-3 w-3 animate-spin" />
+                  Adding...
+                </>
+              ) : (
+                "Add to CRM"
+              )}
             </Button>
           </div>
         </div>
