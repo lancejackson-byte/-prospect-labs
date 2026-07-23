@@ -49,7 +49,7 @@ export function LeadsFilter({ onFilter, currentFilters }: LeadsFilterProps) {
           )}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56" align="end">
+      <DropdownMenuContent className="w-56 z-[100]" align="end">
         <DropdownMenuLabel>Industry</DropdownMenuLabel>
         <DropdownMenuRadioGroup
           value={currentFilters.industry || ""}
